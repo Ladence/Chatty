@@ -4,6 +4,8 @@ import ru.ladence.chatty.Config;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,16 +20,41 @@ class Client extends JFrame {
     // Net fields
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
+    private Socket socket;
 
     private void initUi() {
         messageArea = new JTextField(12);
         sendButton = new JButton("Send message");
         chattyArea = new JTextArea(12,12 );
+        chattyArea.setEditable(false);
 
         this.getContentPane().add(chattyArea, BorderLayout.PAGE_START);
         this.getContentPane().add(messageArea, BorderLayout.CENTER);
         this.getContentPane().add(sendButton, BorderLayout.PAGE_END);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    dataOutputStream.writeUTF("/exit");
+                } catch (IOException e1) {
+                    System.out.println("Can't send exit comma!");
+                }
+
+                try {
+                    socket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+
+                try {
+                    dataInputStream.close();
+                    dataOutputStream.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
         this.pack();
 
         sendButton.addActionListener(e -> {
@@ -58,7 +85,7 @@ class Client extends JFrame {
         SwingWorker<Void, Void> receiveMessageWorker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                String currentMessage = null;
+                String currentMessage;
 
                 while (true) {
                     try {
@@ -77,7 +104,7 @@ class Client extends JFrame {
     }
 
     private void initNet() throws IOException {
-        Socket socket = new Socket(InetAddress.getByName("localhost"), Config.PORT);
+        socket = new Socket(InetAddress.getByName("localhost"), Config.PORT);
         dataInputStream = new DataInputStream(socket.getInputStream());
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
     }

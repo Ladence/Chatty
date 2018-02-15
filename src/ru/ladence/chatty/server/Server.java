@@ -53,6 +53,11 @@ class Server {
             this.socket = socket;
         }
 
+        private void userLogout() {
+            System.out.println("Client : " + socket + " has been logout.");
+            clients.remove(this);
+        }
+
         @Override
         public void run() {
             String received;
@@ -62,9 +67,8 @@ class Server {
                     System.out.println(name + " : " + received);
 
                     if (received.toLowerCase().equals("/exit")) {
-                        System.out.println("Client : " + socket + " has been logout.");
+                        userLogout();
                         socket.close();
-                        clients.remove(this);
                         break;
                     }
 
@@ -73,7 +77,7 @@ class Server {
                     }
 
                 } catch (IOException e) {
-                    System.out.println("Can't read received message !");
+                    System.out.println(clients.size());
                 }
             }
 
