@@ -12,10 +12,11 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-class Client extends JFrame {
+class Client {
     private JTextField messageArea;
     private JButton sendButton;
     private JTextArea chattyArea;
+    private JFrame frame;
 
     // Net fields
     private DataOutputStream dataOutputStream;
@@ -23,16 +24,17 @@ class Client extends JFrame {
     private Socket socket;
 
     private void initUi() {
+        frame = new JFrame("Chatty");
         messageArea = new JTextField(12);
         sendButton = new JButton("Send message");
         chattyArea = new JTextArea(12,12 );
         chattyArea.setEditable(false);
 
-        this.getContentPane().add(chattyArea, BorderLayout.PAGE_START);
-        this.getContentPane().add(messageArea, BorderLayout.CENTER);
-        this.getContentPane().add(sendButton, BorderLayout.PAGE_END);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.addWindowListener(new WindowAdapter() {
+        frame.getContentPane().add(chattyArea, BorderLayout.PAGE_START);
+        frame.getContentPane().add(messageArea, BorderLayout.CENTER);
+        frame.getContentPane().add(sendButton, BorderLayout.PAGE_END);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
@@ -55,7 +57,8 @@ class Client extends JFrame {
                 }
             }
         });
-        this.pack();
+        frame.pack();
+        frame.setVisible(true);
 
         sendButton.addActionListener(e -> {
             new SwingWorker<Void, Void>() {
@@ -74,7 +77,6 @@ class Client extends JFrame {
                     }
                     return null;
                 }
-
                 @Override
                 protected void done() {
                     messageArea.setText("");
@@ -110,7 +112,6 @@ class Client extends JFrame {
     }
 
     private Client() {
-        super("Chatty");
         try {
             initNet();
             initUi();
@@ -120,10 +121,7 @@ class Client extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Client client = new Client();
-            client.setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new Client());
     }
 }
 
