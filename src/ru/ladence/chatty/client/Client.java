@@ -84,7 +84,7 @@ class Client {
             }.execute();
         });
 
-        SwingWorker<Void, Void> receiveMessageWorker = new SwingWorker<Void, Void>() {
+        new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
                 String currentMessage;
@@ -100,9 +100,8 @@ class Client {
                 }
                 return null;
             }
-        };
+        }.execute();
 
-        receiveMessageWorker.execute();
     }
 
     private void initNet() throws IOException {
