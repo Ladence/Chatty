@@ -1,6 +1,6 @@
 package ru.ladence.chatty.server;
 
-import ru.ladence.chatty.Config;
+import ru.ladence.chatty.ConnectionConstants;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,7 +16,7 @@ class Server {
     private Server() {
         clients = new ArrayList<>();
         try {
-            ServerSocket serverSocket = new ServerSocket(Config.PORT);
+            ServerSocket serverSocket = new ServerSocket(ConnectionConstants.PORT);
             Socket clientSocket;
 
             while (true) {

@@ -1,6 +1,7 @@
 package ru.ladence.chatty.client;
 
-import ru.ladence.chatty.Config;
+
+import ru.ladence.chatty.ConnectionConstants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -105,7 +106,7 @@ class Client {
     }
 
     private void initNet() throws IOException {
-        socket = new Socket(InetAddress.getByName("localhost"), Config.PORT);
+        socket = new Socket(InetAddress.getByName(ConnectionConstants.ADDRESS), ConnectionConstants.PORT);
         dataInputStream = new DataInputStream(socket.getInputStream());
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
     }
